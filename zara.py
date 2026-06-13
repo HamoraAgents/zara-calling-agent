@@ -6,20 +6,24 @@ import asyncio
 from playsound import playsound
 import tempfile
 import re
+import json
 
 # API Key Load
 load_dotenv()
 
+# Pharmacy Data Load
+with open('medicines.json', 'r') as f:
+    pharmacy_data = json.load(f)
+
 # Groq Client
 client = Groq(api_key=os.getenv("GROQ_API_KEY"))
 
-# Clean Text Function
+# Clean Text
 def clean_text(text):
     text = re.sub(r'\*+', '', text)
     text = re.sub(r'#+', '', text)
     text = re.sub(r'\[.*?\]', '', text)
-    text = text.strip()
-    return text
+    return text.strip()
 
 # Voice Function
 async def speak(text):
@@ -46,25 +50,38 @@ async def speak(text):
 messages = [
     {
         "role": "system",
-        "content": """You are Zara, a professional AI voice assistant from HamoraAgents.
+        "content": f"""You are Zara, AI pharmacy assistant for {pharmacy_data['pharmacy_name']}.
 
-STRICT RULES:
-- ALWAYS reply in English only
-- NEVER use Urdu or any other script
-- Keep responses short — max 2 to 3 sentences
-- Be natural, friendly and professional
-- No asterisk or special characters in responses
-- Give direct answers — no extra filler words
+PHARMACY INFO:
+- Name: {pharmacy_data['pharmacy_name']}
+- Location: {pharmacy_data['location']}
+- Timing: {pharmacy_data['timing']}
+- Contact: {pharmacy_data['contact']}
+
+MEDICINES LIST:
+{json.dumps(pharmacy_data['medicines'], indent=2)}
+
+YOUR JOB:
+- Tell if medicine is available or not
+- Tell price of medicines
+- Help with appointment booking
+- Be professional and friendly
+- Reply in English only
+- Keep responses short — max 2 sentences
+- No asterisk or special characters
+
+IF MEDICINE NOT IN LIST:
+Say: Please visit our pharmacy or call us directly.
 
 IDENTITY:
 - Your name is Zara
-- You are AI voice assistant from HamoraAgents
-- You help businesses automate their customer calls"""
+- You are AI assistant of {pharmacy_data['pharmacy_name']}
+- You are available 24/7"""
     }
 ]
 
 # Welcome Message
-welcome = "Hello! I am Zara, your AI assistant from HamoraAgents. How can I help you today?"
+welcome = f"Hello! I am Zara, your AI assistant from {pharmacy_data['pharmacy_name']}. How can I help you today?"
 print(f"\nZara: {welcome}")
 print("(Type 'exit' to quit)\n")
 print("-" * 45)
@@ -77,7 +94,7 @@ while True:
 
         # Exit
         if user_input.lower() in ["exit", "quit", "bye"]:
-            bye = "Goodbye! Have a wonderful day!"
+            bye = "Thank you for calling. Have a great day!"
             print(f"Zara: {bye}")
             asyncio.run(speak(bye))
             break

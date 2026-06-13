@@ -1,0 +1,21 @@
+{
+  "pharmacy_name": "Al-Shifa Pharmacy",
+  "location": "Bahawalpur",
+  "contact": "0300-1234567",
+  "medicines": [
+    {"name": "Panadol", "available": true, "price": 50},
+    {"name": "Brufen", "available": true, "price": 80},
+    {"name": "Amoxicillin", "available": false, "price": 120},
+    {"name": "ORS", "available": true, "price": 30},
+    {"name": "Disprin", "available": true, "price": 40},
+    {"name": "Flagyl", "available": true, "price": 60},
+    {"name": "Augmentin", "available": false, "price": 200},
+    {"name": "Risek", "available": true, "price": 90}
+  ],
+  "timing": "9AM - 10PM",
+  "services": [
+    "Medicine availability",
+    "Price inquiry",
+    "Doctor appointment booking"
+  ]
+}

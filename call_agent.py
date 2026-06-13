@@ -5,9 +5,14 @@ from twilio.rest import Client
 from twilio.twiml.voice_response import VoiceResponse, Gather
 from flask import Flask, request
 import re
+import json
 
 # Load Environment
 load_dotenv()
+
+# Pharmacy Data Load
+with open('medicines.json', 'r') as f:
+    pharmacy_data = json.load(f)
 
 # Clients
 groq_client = Groq(api_key=os.getenv("GROQ_API_KEY"))
@@ -35,19 +40,33 @@ def get_ai_response(call_sid, user_input):
         conversation_history[call_sid] = [
             {
                 "role": "system",
-                "content": """You are Zara, a professional AI voice assistant from HamoraAgents.
+                "content": f"""You are Zara, AI pharmacy assistant for {pharmacy_data['pharmacy_name']}.
 
-STRICT RULES:
-- Always reply in English only
-- Keep responses very short — max 2 sentences
-- Be natural and professional
+PHARMACY INFO:
+- Name: {pharmacy_data['pharmacy_name']}
+- Location: {pharmacy_data['location']}
+- Timing: {pharmacy_data['timing']}
+- Contact: {pharmacy_data['contact']}
+
+MEDICINES LIST:
+{json.dumps(pharmacy_data['medicines'], indent=2)}
+
+YOUR JOB:
+- Tell if medicine is available or not
+- Tell price of medicines
+- Help with appointment booking
+- Be professional and friendly
+- Reply in English only
+- Keep responses short — max 2 sentences
 - No asterisk or special characters
-- You are on a phone call — be conversational
+
+IF MEDICINE NOT IN LIST:
+Say: Please visit our pharmacy or call us directly.
 
 IDENTITY:
 - Your name is Zara
-- You are AI voice assistant from HamoraAgents
-- You help businesses with customer calls"""
+- You are AI assistant of {pharmacy_data['pharmacy_name']}
+- You are available 24/7"""
             }
         ]
 
@@ -84,7 +103,7 @@ def voice():
         language="en-US"
     )
     gather.say(
-        "Hello! I am Zara from HamoraAgents. How can I help you today?",
+        f"Hello! I am Zara, AI assistant from {pharmacy_data['pharmacy_name']}. How can I help you today?",
         voice="Polly.Joanna"
     )
     response.append(gather)
@@ -100,7 +119,7 @@ def respond():
 
     if user_speech:
         ai_response = get_ai_response(call_sid, user_speech)
-        print(f"\nUser: {user_speech}")
+        print(f"\nCustomer: {user_speech}")
         print(f"Zara: {ai_response}")
 
         gather = Gather(
@@ -134,7 +153,7 @@ if __name__ == "__main__":
 
     print(f"\n✅ Ngrok URL: {public_url}")
     print(f"✅ Webhook: {public_url}/voice")
-    print("\n⚡ Zara Call Agent Ready!")
+    print(f"\n⚡ {pharmacy_data['pharmacy_name']} Agent Ready!")
     print("=" * 45)
 
     twilio_client.incoming_phone_numbers.list(
