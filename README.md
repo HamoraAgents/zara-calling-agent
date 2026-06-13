@@ -1,20 +1,34 @@
-# Zara — AI Calling Agent 🤖📞
+# Zara — AI Pharmacy Calling Agent 🤖📞
 
-An AI-powered voice calling agent built with Groq, Twilio, and Flask.
+An AI-powered voice calling agent for pharmacies, built with Groq, Twilio, and Flask.
 
 ## What is Zara?
-Zara is an AI voice assistant that handles real phone calls automatically.
+Zara is an intelligent AI voice assistant that handles real phone calls for pharmacies 24/7.
+Customers can call and ask about medicine availability, prices, and appointments.
 Built by HamoraAgents.
 
 ---
 
 ## Features
-- ✅ Real phone call handling
-- ✅ AI powered responses (Groq)
+- ✅ Real phone call handling 24/7
+- ✅ Medicine availability check
+- ✅ Medicine price information
+- ✅ Appointment booking assistance
+- ✅ AI powered responses (Groq LLaMA 3.3)
 - ✅ Natural voice (Polly.Joanna)
-- ✅ Multi-turn conversation
-- ✅ Twilio integration
-- ✅ Ngrok tunnel support
+- ✅ Multi-turn conversation memory
+- ✅ Twilio phone integration
+- ✅ Pharmacy specific responses
+- ✅ Easy medicine list update
+
+---
+
+## How It Works
+1. Customer calls pharmacy number
+2. Zara answers instantly
+3. Customer asks about medicine
+4. Zara checks availability and price
+5. Customer gets instant answer 24/7
 
 ---
 
@@ -34,23 +48,3 @@ Built by HamoraAgents.
 ## Setup
 
 ### Install Requirements
-pip install groq twilio flask python-dotenv edge-tts playsound openai-whisper
-
-### Environment Variables
-Create .env file:
-GROQ_API_KEY=your_key
-TWILIO_ACCOUNT_SID=your_sid
-TWILIO_AUTH_TOKEN=your_token
-TWILIO_PHONE_NUMBER=your_number
-NGROK_AUTH_TOKEN=your_token
-
-### Run
-Step 1: ngrok http 5000
-Step 2: python call_agent.py
-Step 3: python test_call.py
-
----
-
-## Business
-HamoraAgents — AI Call Agents & Chatbots
-📧 hamoraagents@gmail.com
