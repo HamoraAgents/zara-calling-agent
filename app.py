@@ -23,27 +23,40 @@ RULES:
 @app.route("/answer", methods=["GET", "POST"])
 def answer_call():
     response = VoiceResponse()
-    gather = Gather(input="speech", action="/process", timeout=3)
+    gather = Gather(input="speech", action="/process", timeout=5, speechTimeout="auto")
     gather.say("Hello! I am Zara from HamoraAgents. How can I help you today?")
     response.append(gather)
+    response.say("Sorry, I could not hear you. Please call again!")
     return str(response)
 
 @app.route("/process", methods=["GET", "POST"])
 def process_speech():
     user_speech = request.form.get("SpeechResult", "")
+    
+    if not user_speech:
+        response = VoiceResponse()
+        gather = Gather(input="speech", action="/process", timeout=5, speechTimeout="auto")
+        gather.say("Sorry, I did not catch that. Could you please repeat?")
+        response.append(gather)
+        return str(response)
+    
     conversation.append({"role": "user", "content": user_speech})
+    
     chat = client.chat.completions.create(
         model="llama-3.3-70b-versatile",
         messages=conversation,
         max_tokens=100,
         temperature=0.7
     )
+    
     response_text = chat.choices[0].message.content
     conversation.append({"role": "assistant", "content": response_text})
+    
     response = VoiceResponse()
-    gather = Gather(input="speech", action="/process", timeout=3)
+    gather = Gather(input="speech", action="/process", timeout=5, speechTimeout="auto")
     gather.say(response_text)
     response.append(gather)
+    response.say("Thank you for calling HamoraAgents. Goodbye!")
     return str(response)
 
 if __name__ == "__main__":
